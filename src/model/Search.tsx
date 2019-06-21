@@ -3,16 +3,16 @@ import * as _ from 'lodash';
 export default class Search {
     _searchContent: Array<Object>;
     _indexedSearchContent: any;
-    _searchField:string;
+    _searchableFields:Array<string>;
 
     constructor() {
         this._searchContent = [];
         this._indexedSearchContent = {};
-        this._searchField = ""; 
+        this._searchableFields = []; 
     }
 
-    set searchField(value:string) {
-        this._searchField = value;
+    set searchableFields(value:Array<string>) {
+        this._searchableFields = value;
         this.indexing();
     }
     
@@ -38,14 +38,21 @@ export default class Search {
     }
 
     /// <summary>
-    /// a helper function used to build indexes for searchable field via groupBy
+    /// a helper function used to build indexes for searchable fields via groupBy
     /// </summary>
     /// <returns></returns>
     private indexing() {
-        if(this._searchContent.length === 0 || this._searchField === "") return;
+        if(this._searchContent.length === 0 || this._searchableFields.length === 0) return;
 
-        this._indexedSearchContent = _.chain(this._searchContent)
-                                      .groupBy(this._searchField)
-                                      .value();
+        this._indexedSearchContent = {}
+
+        const indexedContentArray = this._searchableFields.map(field=> {
+            const indexedContentByEachField =  _.chain(this._searchContent)
+                                                .groupBy(field)
+                                                .value();
+            _.merge(this._indexedSearchContent,indexedContentByEachField);                                    
+            return indexedContentByEachField;
+        });
     }
+
 }
