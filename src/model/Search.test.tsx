@@ -22,7 +22,7 @@ describe('Search', () => {
             name:"MYOB",
             abn:13086760198,
             tags:["software company","accounting"],
-            domainNames: ["myob.com","arl.com"]
+            domainNames: ["myob.com","www.com"]
         };
 
         xeroOrganization = {
@@ -30,20 +30,20 @@ describe('Search', () => {
             name:"Xero",
             abn:8924215247,
             tags:["software company","accounting"],
-            domainNames:["xero.com"]
+            domainNames:["xero.com","www.com"]
         };
 
         organizations = [myobOrganization, xeroOrganization];
     });
 
-    describe('added a json search content without search field', () => {
+    describe('addSearchContent: added a json search content without search field', () => {
         it('should not index the search content', () => {
             search.addSearchContent(organizations);
             expect(search.indexedSearchContent).toEqual({});
         });
     });
 
-    describe('added a json search content with a search field: name', () => {
+    describe('addSearchContent: added a json search content with a search field: name', () => {
         it('should index the search content by name', () => {
             search.addSearchContent(organizations);
             search.searchableFields = ["name"];
@@ -56,7 +56,7 @@ describe('Search', () => {
         });
     });
 
-    describe('search companies by their names', () => {
+    describe('search: search companies by their names', () => {
         it('should find all companies by the searched name', () => {
             search.addSearchContent(organizations);
             search.searchableFields = ["name"];
@@ -69,8 +69,7 @@ describe('Search', () => {
         });
     });
 
-
-    describe('added a json search content with multiple search fields', () => {
+    describe('addSearchContent: added a json search content with multiple search fields', () => {
         it('should index by each field and combine the results', () => {
             search.addSearchContent(organizations);
             search.searchableFields = ["name","abn"];
@@ -84,7 +83,7 @@ describe('Search', () => {
         });
     });
 
-    describe('search companies by their names and abns', () => {
+    describe('search: search companies by their names and abns', () => {
         it('should find all companies by the searched name', () => {
             search.addSearchContent(organizations);
             search.searchableFields = ["name", "abn"];
@@ -97,24 +96,45 @@ describe('Search', () => {
         });
     });
 
-
-    describe('added a json search content with searchable fields are array type', () => {
-        it('should index by array ToString() value and combine the results', () => {
+    describe('addSearchContent: added a json search content with searchable fields are array type', () => {
+        it('should index by array value and combine the results', () => {
             search.addSearchContent(organizations);
             search.searchableFields = ["tags","domainNames"];
             
-            expect(search.indexedSearchContent).toEqual({
-                'software company,accounting': [
-                    myobOrganization, xeroOrganization
-                ],
-                'myob.com,arl.com': [
-                    myobOrganization
-                ],
-                'xero.com': [
-                    xeroOrganization
-                ]
-            });
+            expect(search.indexedSearchContent).toEqual( {
+                'software company': [myobOrganization,xeroOrganization],
+                'accounting': [myobOrganization, xeroOrganization],
+                'myob.com': [myobOrganization],
+                'www.com': [myobOrganization,xeroOrganization],
+                'xero.com': [xeroOrganization]
+              });
+            
+        });
+    });
 
+    describe('search: search companies by their tags and domainNames', () => {
+        it('should find all companies by the searchable array value', () => {
+            search.addSearchContent(organizations);
+            search.searchableFields = ["tags","domainNames"];
+
+            expect(search.search("software company")).toEqual([myobOrganization,xeroOrganization]);
+            expect(search.search("accounting")).toEqual([myobOrganization,xeroOrganization]);
+            expect(search.search("myob.com")).toEqual([myobOrganization]);
+            expect(search.search("www.com")).toEqual([myobOrganization,xeroOrganization]);
+            expect(search.search("xero.com")).toEqual([xeroOrganization]);
+
+        });
+    });
+
+
+    describe('isArrayField: check organizations each field is array field or not',()=>{
+        it('should tell the array field', ()=> {
+            expect(search.isArrayField("id", organizations)).toBe(false);
+            expect(search.isArrayField("name", organizations)).toBe(false);
+            expect(search.isArrayField("abn", organizations)).toBe(false);
+            expect(search.isArrayField("tags", organizations)).toBe(true);
+            expect(search.isArrayField("domainNames", organizations)).toBe(true);
+            expect(search.isArrayField("domainNames", [])).toBe(false);
         });
     });
 
@@ -129,4 +149,42 @@ describe('Search', () => {
             ]);
         });
     });
+
+    describe('removeTmpField: remove temporary added field during flatten search content',()=>{
+        it('should remove the given fieldname from the content', ()=> {
+            const flattenedIndexedContent = {
+                'myob.com': [
+                  {
+                    ...myobOrganization,
+                    __tmpFieldNameFor__domainNames: 'myob.com'
+                  }
+                ],
+                'www.com': [
+                  {
+                    ...myobOrganization,
+                    __tmpFieldNameFor__domainNames: 'www.com'
+                  },
+                  {
+                    ...xeroOrganization,
+                    __tmpFieldNameFor__domainNames: 'www.com'
+                  }
+                ],
+                'xero.com': [
+                  {
+                    ...xeroOrganization,
+                    __tmpFieldNameFor__domainNames: 'xero.com'
+                  }
+                ]
+              };
+            
+            const indexedContent = search.removeTmpField(flattenedIndexedContent, "__tmpFieldNameFor__domainNames");
+
+            expect(indexedContent).toEqual({
+                'myob.com': [myobOrganization],
+                'www.com': [myobOrganization, xeroOrganization],
+                'xero.com': [xeroOrganization]
+            });
+        });
+    });
+    
 });

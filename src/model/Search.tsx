@@ -36,7 +36,15 @@ export default class Search {
         return this._indexedSearchContent[searchValue] || [];
     }
 
+    isArrayField(fieldName: string, content:Array<Object>) {
+        if(content.length === 0) return false;
+        //check the input field is an array type property in content
+        const contentFirstElement:any = content[0];// this is a json key value pair element
+        return (contentFirstElement[fieldName] instanceof Array);
+    }
 
+    
+    readonly tmpFieldPrefix: string = "__tmpFieldNameFor__";
     /// <summary>
     /// flatten content,
     /// if it contains array type fields, insert temporary fields for them
@@ -46,9 +54,7 @@ export default class Search {
     /// </summary>
     flattenSearchContent(fieldName: string, content:Array<Object>) {
         if(content.length === 0) return [];
-        //check the input field is an array type property in content
-        const contentFirstElement:any = content[0];// this is a json key value pair element
-        if(!(contentFirstElement[fieldName] instanceof Array)) return content;
+        if(!this.isArrayField(fieldName,content)) return content;
 
         //iterate each content item and iterate its array property values
         //generate new array items
@@ -61,7 +67,22 @@ export default class Search {
         return _.flatten(nestedResult);
     }
 
-    readonly tmpFieldPrefix: string = "__tmpFieldNameFor__";
+    /// <summary>
+    /// remove temporary added fields from indexed search content
+    /// </summary>
+    removeTmpField(indexedContentWithTmpField:any, tmpFieldName:string) {
+        let result = {};
+        Object.keys(indexedContentWithTmpField).forEach((k:any)=> {
+            const indexedValue = indexedContentWithTmpField[k].map((val:any) => {
+                delete val[tmpFieldName];
+                return val;
+            });
+            _.merge(result,{ [`${k}`]: indexedValue }); 
+        });
+
+        return result;
+    }
+
 
     /// <summary>
     /// a helper function used to build indexes for searchable fields via groupBy
@@ -69,13 +90,26 @@ export default class Search {
     private indexing() {
         if(this._searchContent.length === 0 || this._searchableFields.length === 0) return;
 
-        this._searchableFields.forEach(field => {
-            const indexedContentByEachField =  _.chain(this._searchContent)
-                                                .groupBy(field)
-                                                .value();
-            _.merge(this._indexedSearchContent,indexedContentByEachField);                                    
-            return indexedContentByEachField;
+        this._searchableFields.forEach(fieldName => {
+            if(this.isArrayField(fieldName,this._searchContent)){
+                //preprocessing the searchContent
+                let content = _.assign(this._searchContent);
+                content = this.flattenSearchContent(fieldName,content);
+                
+                const indexedContentWithTmpField = _.chain(content)
+                                                    .groupBy(this.tmpFieldPrefix + fieldName)
+                                                    .value();
+                const indexedResult = this.removeTmpField(indexedContentWithTmpField, this.tmpFieldPrefix + fieldName);
+                
+                //remove tmpfields
+                _.merge(this._indexedSearchContent, indexedResult);
+            } else {
+                const indexedContent = _.chain(this._searchContent)
+                                        .groupBy(fieldName)
+                                        .value();
+                _.merge(this._indexedSearchContent, indexedContent);                     
+            }
+           
         });
     }
-
 }
