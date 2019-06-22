@@ -1,26 +1,39 @@
 import Search from './Search';
 
+interface FakeOrganization {
+    id:number,
+    name:string,
+    abn:number,
+    tags:Array<string>,
+    domainNames: Array<string>
+}
+
 describe('Search', () => {
     let search: Search;
+    let myobOrganization: FakeOrganization;
+    let xeroOrganization: FakeOrganization;
     let organizations: Array<Object>;
 
     beforeEach(() => {
         search = new Search();
 
-        organizations = [
-            {
-                _id:1,
-                name:"MYOB",
-                abn:13086760198,
-                tags:["software company","accounting"]
-            },
-            {
-                _id:2,
-                name:"Xero",
-                abn:8924215247,
-                tags:["software company","accounting"]
-            }
-        ]
+        myobOrganization = {
+            id:1,
+            name:"MYOB",
+            abn:13086760198,
+            tags:["software company","accounting"],
+            domainNames: ["myob.com","arl.com"]
+        };
+
+        xeroOrganization = {
+            id:2,
+            name:"Xero",
+            abn:8924215247,
+            tags:["software company","accounting"],
+            domainNames:["xero.com"]
+        };
+
+        organizations = [myobOrganization, xeroOrganization];
     });
 
     describe('added a json search content without search field', () => {
@@ -35,28 +48,8 @@ describe('Search', () => {
             search.addSearchContent(organizations);
             search.searchableFields = ["name"];
             const organizationsIndexedByName = {
-                "MYOB": [
-                   {
-                      "_id": 1,
-                      "name": "MYOB",
-                      "abn": 13086760198,
-                      "tags": [
-                         "software company",
-                         "accounting"
-                      ]
-                   }
-                ],
-                "Xero": [
-                   {
-                      "_id": 2,
-                      "name": "Xero",
-                      "abn": 8924215247,
-                      "tags": [
-                         "software company",
-                         "accounting"
-                      ]
-                   }
-                ]
+                "MYOB": [myobOrganization],
+                "Xero": [xeroOrganization]
             };
 
             expect(search.indexedSearchContent).toEqual(organizationsIndexedByName);
@@ -68,8 +61,8 @@ describe('Search', () => {
             search.addSearchContent(organizations);
             search.searchableFields = ["name"];
             expect(search.search("UNKNOWN")).toEqual([]);
-            expect(search.search("MYOB")).toEqual([organizations[0]]);
-            expect(search.search("Xero")).toEqual([organizations[1]]);
+            expect(search.search("MYOB")).toEqual([myobOrganization]);
+            expect(search.search("Xero")).toEqual([xeroOrganization]);
             expect(search.search("13086760198")).toEqual([]);
             expect(search.search("8924215247")).toEqual([]);
 
@@ -83,22 +76,10 @@ describe('Search', () => {
             search.searchableFields = ["name","abn"];
 
             expect(search.indexedSearchContent).toEqual( {
-                MYOB: [ { _id: 1, name: 'MYOB', abn: 13086760198, tags: [
-                    "software company",
-                    "accounting"
-                 ] } ],
-                Xero: [ { _id: 2, name: 'Xero', abn: 8924215247, tags: [
-                    "software company",
-                    "accounting"
-                 ] } ],
-                '13086760198': [ { _id: 1, name: 'MYOB', abn: 13086760198, tags: [
-                    "software company",
-                    "accounting"
-                 ] } ],
-                '8924215247': [ { _id: 2, name: 'Xero', abn: 8924215247, tags: [
-                    "software company",
-                    "accounting"
-                 ] } ]
+                MYOB: [ myobOrganization ],
+                Xero: [ xeroOrganization ],
+                '13086760198': [ myobOrganization ],
+                '8924215247': [ xeroOrganization]
               })
         });
     });
@@ -108,12 +89,32 @@ describe('Search', () => {
             search.addSearchContent(organizations);
             search.searchableFields = ["name", "abn"];
             expect(search.search("UNKNOWN")).toEqual([]);
-            expect(search.search("MYOB")).toEqual([organizations[0]]);
-            expect(search.search("Xero")).toEqual([organizations[1]]);
-            expect(search.search("13086760198")).toEqual([organizations[0]]);
-            expect(search.search("8924215247")).toEqual([organizations[1]]);
+            expect(search.search("MYOB")).toEqual([myobOrganization]);
+            expect(search.search("Xero")).toEqual([xeroOrganization]);
+            expect(search.search("13086760198")).toEqual([myobOrganization]);
+            expect(search.search("8924215247")).toEqual([xeroOrganization]);
 
         });
     });
 
+
+    describe('added a json search content with searchable fields are array type', () => {
+        it('should index by array ToString() value and combine the results', () => {
+            search.addSearchContent(organizations);
+            search.searchableFields = ["tags","domainNames"];
+            
+            expect(search.indexedSearchContent).toEqual({
+                'software company,accounting': [
+                    myobOrganization, xeroOrganization
+                ],
+                'myob.com,arl.com': [
+                    myobOrganization
+                ],
+                'xero.com': [
+                    xeroOrganization
+                ]
+            });
+
+        });
+    });
 });
