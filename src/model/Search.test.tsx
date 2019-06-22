@@ -117,4 +117,16 @@ describe('Search', () => {
 
         });
     });
+
+    describe('flattenSearchContent: searchContent has an array type field',()=>{
+        it('should flatten the searchContent with the new tmporary inserting field name', ()=> {
+            const content = [{tags:["a", "b"]}];
+            const searchableField = "tags";
+
+            expect(search.flattenSearchContent(searchableField, content)).toEqual([
+                {tags:["a", "b"],"__tmpFieldNameFor__tags": "a"},
+                {tags:["a", "b"],"__tmpFieldNameFor__tags": "b"}
+            ]);
+        });
+    });
 });

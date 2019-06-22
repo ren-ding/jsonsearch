@@ -36,6 +36,33 @@ export default class Search {
         return this._indexedSearchContent[searchValue] || [];
     }
 
+
+    /// <summary>
+    /// flatten content,
+    /// if it contains array type fields, insert temporary fields for them
+    /// [{tags:["a", "b"]}]
+    /// =>
+    /// [{tags:["a", "b"], __tmpFieldfor__tags:"a"}, {tags:["a", "b"],  __tmpFieldfor__tags:"b"}]
+    /// </summary>
+    flattenSearchContent(fieldName: string, content:Array<Object>) {
+        if(content.length === 0) return [];
+        //check the input field is an array type property in content
+        const contentFirstElement:any = content[0];// this is a json key value pair element
+        if(!(contentFirstElement[fieldName] instanceof Array)) return content;
+
+        //iterate each content item and iterate its array property values
+        //generate new array items
+        const nestedResult = content.map((item:any) => 
+            item[fieldName].map( (val: string|number) => 
+                _.assign({},item,{[this.tmpFieldPrefix + `${fieldName}`] :val})
+            )
+        );
+
+        return _.flatten(nestedResult);
+    }
+
+    readonly tmpFieldPrefix: string = "__tmpFieldNameFor__";
+
     /// <summary>
     /// a helper function used to build indexes for searchable fields via groupBy
     /// </summary>
