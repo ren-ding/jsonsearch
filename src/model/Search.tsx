@@ -96,20 +96,20 @@ export default class Search {
                 let content = _.assign(this._searchContent);
                 content = this.flattenSearchContent(fieldName,content);
                 
-                const indexedContentWithTmpField = _.chain(content)
-                                                    .groupBy(this.tmpFieldPrefix + fieldName)
-                                                    .value();
+                const indexedContentWithTmpField = this.indexedByField(content, this.tmpFieldPrefix + fieldName);
                 const indexedResult = this.removeTmpField(indexedContentWithTmpField, this.tmpFieldPrefix + fieldName);
                 
                 //remove tmpfields
                 _.merge(this._indexedSearchContent, indexedResult);
             } else {
-                const indexedContent = _.chain(this._searchContent)
-                                        .groupBy(fieldName)
-                                        .value();
+                const indexedContent = this.indexedByField(this._searchContent, fieldName);
                 _.merge(this._indexedSearchContent, indexedContent);                     
             }
-           
         });
     }
+
+    private indexedByField = (content: Array<Object>, fieldName: string) => 
+                                _.chain(content)
+                                .groupBy(fieldName)
+                                .value();
 }
