@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import * as fromUtil from './Util';
 
 export default class Search {
     _searchContent: Array<Object>;
@@ -96,20 +97,15 @@ export default class Search {
                 let content = _.assign(this._searchContent);
                 content = this.flattenSearchContent(fieldName,content);
                 
-                const indexedContentWithTmpField = this.indexedByField(content, this.tmpFieldPrefix + fieldName);
+                const indexedContentWithTmpField = fromUtil.indexedByField(content, this.tmpFieldPrefix + fieldName);
                 const indexedResult = this.removeTmpField(indexedContentWithTmpField, this.tmpFieldPrefix + fieldName);
                 
                 //remove tmpfields
                 _.merge(this._indexedSearchContent, indexedResult);
             } else {
-                const indexedContent = this.indexedByField(this._searchContent, fieldName);
+                const indexedContent = fromUtil.indexedByField(this._searchContent, fieldName);
                 _.merge(this._indexedSearchContent, indexedContent);                     
             }
         });
     }
-
-    private indexedByField = (content: Array<Object>, fieldName: string) => 
-                                _.chain(content)
-                                .groupBy(fieldName)
-                                .value();
 }
