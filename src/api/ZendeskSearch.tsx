@@ -29,19 +29,19 @@ export default class ZendeskSearch {
         this._ticketsSearch.addSearchContent(fakeDatabase.tickets);
     }
 
-    searchFromOrganizations(searchableFields:Array<string>, searchValue: string) : Array<Object> {
+    searchFromOrganizations(searchableFields:Array<string>, searchValue: string) : Array<Organization> {
         return this.search(this._organizationsSearch, searchableFields, searchValue);
     }
 
-    searchFromUsers(searchableFields:Array<string>, searchValue: string) : Array<Object> {
+    searchFromUsers(searchableFields:Array<string>, searchValue: string) : Array<User> {
         return this.search(this._usersSearch, searchableFields, searchValue);
     }
 
-    searchFromTickets(searchableFields:Array<string>, searchValue: string) : Array<Object> {
+    searchFromTickets(searchableFields:Array<string>, searchValue: string) : Array<Ticket> {
         return this.search(this._ticketsSearch, searchableFields, searchValue);
     }
 
-    search(search:Search<Organization|User|Ticket>, searchableFields:Array<string>, searchValue: string) : Array<Object> {
+    private search<T>(search:Search<T>, searchableFields:Array<string>, searchValue: string) : Array<T> {
         if(search == null) return [];
         
         if(!this.stringArraysEqual(search.searchableFields, searchableFields)) {
