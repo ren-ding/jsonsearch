@@ -1,5 +1,15 @@
+import Organization from "../model/Organization";
+import User from "../model/User";
+import Ticket from "../model/Ticket";
+
 //export fakeDatabase for testing purpose
-export const fakeDatabase = {
+export interface RawData {
+  organizations: Array<Organization>,
+  users: Array<User>
+  tickets: Array<Ticket>
+}
+
+export const fakeDatabase : RawData = {
     organizations: [
         {
           "_id": 101,

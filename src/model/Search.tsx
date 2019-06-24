@@ -1,8 +1,8 @@
 import * as _ from 'lodash';
 import * as fromUtil from './Util';
 
-export default class Search {
-    _searchContent: Array<Object>;
+export default class Search <T> {
+    _searchContent: Array<T>;
     _indexedSearchContent: any; //this is a groupby results type, an object contains indexed key value pairs
     _searchableFields:Array<string>;
 
@@ -16,6 +16,10 @@ export default class Search {
         this._searchableFields = value;
         this.indexing();
     }
+
+    get searchableFields(): Array<string> {
+        return this._searchableFields;
+    }
     
     get searchContent() : Array<Object> {
         return this._searchContent;
@@ -28,16 +32,16 @@ export default class Search {
     /// <summary>
     /// append new search content and rebuild the index
     /// </summary>
-    addSearchContent(newContent: Array<Object>) {
+    addSearchContent(newContent: Array<T>) {
         this._searchContent = [...this._searchContent,...newContent];
         this.indexing();
     }
 
-    search(searchValue: string) : Array<Object> {
+    search(searchValue: string) : Array<T> {
         return this._indexedSearchContent[searchValue] || [];
     }
 
-    isArrayField(fieldName: string, content:Array<Object>) {
+    isArrayField(fieldName: string, content:Array<T>) {
         if(content.length === 0) return false;
         //check the input field is an array type property in content
         const contentFirstElement:any = content[0];// this is a json key value pair element
@@ -53,7 +57,7 @@ export default class Search {
     /// =>
     /// [{tags:["a", "b"], __tmpFieldfor__tags:"a"}, {tags:["a", "b"],  __tmpFieldfor__tags:"b"}]
     /// </summary>
-    flattenSearchContent(fieldName: string, content:Array<Object>) {
+    flattenSearchContent(fieldName: string, content:Array<T>) {
         if(content.length === 0) return [];
         if(!this.isArrayField(fieldName,content)) return content;
 
@@ -90,6 +94,7 @@ export default class Search {
     /// </summary>
     private indexing() {
         if(this._searchContent.length === 0 || this._searchableFields.length === 0) return;
+        this._indexedSearchContent = {};
 
         this._searchableFields.forEach(fieldName => {
             if(this.isArrayField(fieldName,this._searchContent)){

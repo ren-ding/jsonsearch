@@ -9,10 +9,10 @@ interface FakeOrganization {
 }
 
 describe('Search', () => {
-    let search: Search;
+    let search: Search<FakeOrganization>;
     let myobOrganization: FakeOrganization;
     let xeroOrganization: FakeOrganization;
-    let organizations: Array<Object>;
+    let organizations: Array<FakeOrganization>;
 
     beforeEach(() => {
         search = new Search();
@@ -139,11 +139,15 @@ describe('Search', () => {
     });
 
     describe('flattenSearchContent: searchContent has an array type field',()=>{
-        it('should flatten the searchContent with the new tmporary inserting field name', ()=> {
-            const content = [{tags:["a", "b"]}];
+        it('should flatten the searchContent with the new tmporary inserting field name', ()=> {            
+            interface Itag{
+                tags:Array<string>        
+            }
+            const content:Array<Itag> = [{tags:["a", "b"]}];
             const searchableField = "tags";
+            const tagSearch = new Search<Itag>()
 
-            expect(search.flattenSearchContent(searchableField, content)).toEqual([
+            expect(tagSearch.flattenSearchContent(searchableField, content)).toEqual([
                 {tags:["a", "b"],"__tmpFieldNameFor__tags": "a"},
                 {tags:["a", "b"],"__tmpFieldNameFor__tags": "b"}
             ]);
