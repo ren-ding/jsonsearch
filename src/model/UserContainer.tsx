@@ -4,7 +4,7 @@ import Ticket from './Ticket';
 
 export default interface UserContainer {
     user: User;
-    organization: Organization;
+    organization?: Organization;
     submitTickets: Array<Ticket>;
     assignedTickets: Array<Ticket>;
 }

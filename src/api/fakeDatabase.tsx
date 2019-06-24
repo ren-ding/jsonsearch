@@ -5,7 +5,7 @@ import Ticket from "../model/Ticket";
 //export fakeDatabase for testing purpose
 export interface RawData {
   organizations: Array<Organization>,
-  users: Array<User>
+  users: Array<User>,
   tickets: Array<Ticket>
 }
 
