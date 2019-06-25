@@ -1,47 +1,69 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SearchFilter should render to match snapshot 1`] = `
-<div>
+<div
+  className="search-filter-wrapper"
+>
   <div
-    className="Dropdown-root"
+    className="drop-down-wrapper"
   >
     <div
-      aria-haspopup="listbox"
-      className="Dropdown-control"
-      onMouseDown={[Function]}
-      onTouchEnd={[Function]}
+      className="Dropdown-root"
     >
       <div
-        className="Dropdown-placeholder is-selected"
+        aria-haspopup="listbox"
+        className="Dropdown-control"
+        onMouseDown={[Function]}
+        onTouchEnd={[Function]}
       >
-        0
-      </div>
-      <div
-        className="Dropdown-arrow-wrapper"
-      >
-        <span
-          className="Dropdown-arrow"
-        />
+        <div
+          className="Dropdown-placeholder is-selected"
+        >
+          0
+        </div>
+        <div
+          className="Dropdown-arrow-wrapper"
+        >
+          <span
+            className="Dropdown-arrow"
+          />
+        </div>
       </div>
     </div>
   </div>
-  <div>
-    <label>
-      SearchableFields(e.g. name,tags): 
-    </label>
-    <input
-      onChange={[Function]}
-      type="text"
-    />
+  <div
+    className="searchable-fields-input-box-wrapper"
+  >
+    <div
+      className="ui fluid icon input"
+    >
+      <input
+        onChange={[Function]}
+        placeholder="Search fields (e.g. name,tags): "
+        size={30}
+        type="text"
+      />
+      <i
+        className="search icon"
+      />
+    </div>
   </div>
-  <div>
-    <label>
-      Search Value: 
-    </label>
-    <input
-      onChange={[Function]}
-      type="text"
-    />
+  <div
+    className="search-value-input-box-wrapper"
+  >
+    <div
+      className="ui fluid icon input"
+    >
+      <input
+        onChange={[Function]}
+        placeholder="Search value"
+        size={30}
+        type="text"
+      />
+      <i
+        className="search icon"
+      />
+    </div>
   </div>
 </div>
 `;

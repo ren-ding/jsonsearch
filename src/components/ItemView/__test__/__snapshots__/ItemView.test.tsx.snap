@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ItemView should render to match snapshot 1`] = `
+<div>
+  <table
+    className="ui compact table"
+  >
+    <thead>
+      <tr>
+        <th>
+          Field
+        </th>
+        <th>
+          Value
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          variableName
+        </td>
+        <td>
+          variableValue
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+`;

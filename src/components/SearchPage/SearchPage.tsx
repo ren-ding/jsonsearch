@@ -5,6 +5,7 @@ import UserContainer from '../../model/UserContainer';
 import TicketContainer from '../../model/TicketContainer';
 import SearchFilter from '../SearchFilter';
 import {Option} from 'react-dropdown';
+import './style/search-page.css';
 
 interface SearchPagePropsInterface {
 }
@@ -48,7 +49,7 @@ export default class SearchPage extends Component<SearchPagePropsInterface, Sear
         ];
 
         return (
-        <div>
+        <div className='search-page-wrapper'>
             <ZendeskSearchHeader/>
             <SearchFilter
              searchTableDropdownList = { ddlSearchTableOptions }
@@ -57,7 +58,7 @@ export default class SearchPage extends Component<SearchPagePropsInterface, Sear
              onSearchableFieldsChange = {this.onSearchableFieldsChange}
              onSearchValueChange = {this.onSearchValueChange}
             />
-            <button type="button" className='search-button' onClick={this.onSearchButtonClick}>Search</button>
+            <button type="button" className='ui blue button search-button' onClick={this.onSearchButtonClick}>Search</button>
         </div>);
     }
 
@@ -140,13 +141,33 @@ const ZendeskSearchHeader = () => {
     
     return (
     <div className='zendesk-search-header'>
-        Zendesk Search
-        <p>Searchable fields</p>
-        <p>Organization table:</p>
-        {keysOfOrganization.map(o=> (o + ', '))}
-        <p>User table:</p>
-        {keysOfUser.map(u=> (u + ', '))}
-        <p>Ticket table:</p>
-        {keysOfTicket.map(t=> (t + ', '))}
+        <h1 className="ui center aligned header">Zendesk Search</h1>
+        <h2 className="ui header">
+            <i className="search icon"></i>
+            <div className="content">Searchable Fields</div>
+        </h2>
+        <table className="ui celled striped table">
+            <thead>
+                <tr>
+                    <th colSpan={2}>
+                        Searchable Fields
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>User Fields</td>
+                    <td>{keysOfUser.join(',')}</td>
+                </tr>
+                <tr>
+                    <td>Organization Fields</td>
+                    <td>{keysOfOrganization.join(',')}</td>
+                </tr>
+                <tr>
+                    <td>Ticket Fields</td>
+                    <td>{keysOfTicket.join(',')}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>);
 };

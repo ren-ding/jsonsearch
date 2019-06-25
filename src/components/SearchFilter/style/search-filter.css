@@ -1,0 +1,26 @@
+.search-filter-wrapper {
+    display: flex;
+    padding: 20px;
+    margin-right:350px;
+}
+
+.drop-down-wrapper {
+    margin:10px 20px 10px 0;
+    flex: 1;
+}
+
+.searchable-fields-input-box-wrapper {
+    margin: 10px 10px;
+    flex: 3;
+    font-size:14px;
+}
+
+.search-value-input-box-wrapper {
+    margin: 10px 0px;
+    flex: 2;
+    font-size: 14px;
+}
+
+.input-box input {
+    height: 36px;
+}

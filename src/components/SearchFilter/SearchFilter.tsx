@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Dropdown, {Option} from 'react-dropdown';
 import 'react-dropdown/style.css';
+import './style/search-filter.css';
 
 export interface SearchFilterPropsInterface {
     searchTableDropdownList: Array<Option>,
@@ -23,9 +24,9 @@ const InputBox = ({
     labelName,
     onInputChange
 }:OnInputChangeInterface)=>(
-    <div>
-        <label>{labelName}</label>
-        <input type="text" onChange={onInputChange}></input>
+    <div className='ui fluid icon input'>
+        <input type="text" size={30} onChange={onInputChange} placeholder={labelName}></input>
+        <i className='search icon'></i>
     </div>
 );
 
@@ -36,20 +37,26 @@ export default class SearchFilter extends Component<SearchFilterPropsInterface, 
 
     render() {
         return (
-        <div>
-            <Dropdown 
-                options={this.props.searchTableDropdownList}
-                onChange={this.props.onChange}
-                value={this.props.selectedSearchTable.toString()} 
-            />
-            <InputBox
-                labelName = "SearchableFields(e.g. name,tags): "
-                onInputChange={this.props.onSearchableFieldsChange}
-            />
-            <InputBox
-                labelName = "Search Value: "
-                onInputChange={this.props.onSearchValueChange}
-            />
+        <div className='search-filter-wrapper'>
+            <div className='drop-down-wrapper'>
+                <Dropdown 
+                    options={this.props.searchTableDropdownList}
+                    onChange={this.props.onChange}
+                    value={this.props.selectedSearchTable.toString()} 
+                />
+            </div>
+            <div className='searchable-fields-input-box-wrapper'>
+                <InputBox
+                    labelName = "Search fields (e.g. name,tags): "
+                    onInputChange={this.props.onSearchableFieldsChange}
+                />
+            </div>
+            <div className='search-value-input-box-wrapper'>
+                <InputBox
+                    labelName = "Search value"
+                    onInputChange={this.props.onSearchValueChange}
+                />
+            </div>
         </div>);
     }
 }
