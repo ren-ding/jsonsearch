@@ -2,6 +2,17 @@
 
 exports[`SearchPage should render to match snapshot 1`] = `
 <div>
-  Zendesk Search
+  <div
+    className="zendesk-search-header"
+  >
+    Zendesk Search
+  </div>
+  <button
+    className="search-button"
+    onClick={[Function]}
+    type="button"
+  >
+    Search
+  </button>
 </div>
 `;

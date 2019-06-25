@@ -1,6 +1,6 @@
 import Search from './Search';
 
-interface FakeOrganization {
+interface FakeOrganizationInterface {
     id:number,
     name:string,
     abn:number,
@@ -9,10 +9,10 @@ interface FakeOrganization {
 }
 
 describe('Search', () => {
-    let search: Search<FakeOrganization>;
-    let myobOrganization: FakeOrganization;
-    let xeroOrganization: FakeOrganization;
-    let organizations: Array<FakeOrganization>;
+    let search: Search<FakeOrganizationInterface>;
+    let myobOrganization: FakeOrganizationInterface;
+    let xeroOrganization: FakeOrganizationInterface;
+    let organizations: Array<FakeOrganizationInterface>;
 
     beforeEach(() => {
         search = new Search();
@@ -140,12 +140,12 @@ describe('Search', () => {
 
     describe('flattenSearchContent: searchContent has an array type field',()=>{
         it('should flatten the searchContent with the new tmporary inserting field name', ()=> {            
-            interface Itag{
+            interface ItagInterface{
                 tags:Array<string>        
             }
-            const content:Array<Itag> = [{tags:["a", "b"]}];
+            const content:Array<ItagInterface> = [{tags:["a", "b"]}];
             const searchableField = "tags";
-            const tagSearch = new Search<Itag>()
+            const tagSearch = new Search<ItagInterface>()
 
             expect(tagSearch.flattenSearchContent(searchableField, content)).toEqual([
                 {tags:["a", "b"],"__tmpFieldNameFor__tags": "a"},

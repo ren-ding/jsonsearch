@@ -1,5 +1,4 @@
 import {fakeDatabase} from './fakeDatabase';
-import * as api from '../api';
 import Search from '../model/Search';
 import Organization from '../model/Organization';
 import User from '../model/User';
@@ -9,7 +8,7 @@ import UserContainer from '../model/UserContainer';
 import TicketContainer from '../model/TicketContainer';
 import {indexedByField} from '../model/Util';
 
-interface DB {
+interface DBInterface {
     organizations: Array<Organization>,
     users: Array<User>,
     tickets: Array<Ticket>,
@@ -21,8 +20,14 @@ interface DB {
     indexedTicketsByOrganizationId: any,
 }
 
-export default class ZendeskSearch {
-    _db: DB;
+export interface ZendeskSearchInterface {
+    searchOrganizationWithRelatedInfo: (searchableFields:Array<string>, searchValue: string) => Array<OrganizationContainer> 
+    searchUserWithRelatedInfo: (searchableFields:Array<string>, searchValue: string) => Array<UserContainer> 
+    searchTicketWithRelatedInfo: (searchableFields:Array<string>, searchValue: string) => Array<TicketContainer> 
+}
+
+export default class ZendeskSearch implements ZendeskSearchInterface {
+    _db: DBInterface;
     _organizationsSearch: Search<Organization>;
     _usersSearch: Search<User>;
     _ticketsSearch: Search<Ticket>;
@@ -134,7 +139,5 @@ export default class ZendeskSearch {
     private indexedTicketsByOrganizationId(){
         return indexedByField(fakeDatabase.tickets, "organization_id");
     };
-
-    
 
 }
