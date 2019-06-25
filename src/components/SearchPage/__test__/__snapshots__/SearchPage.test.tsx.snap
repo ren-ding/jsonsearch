@@ -6,6 +6,105 @@ exports[`SearchPage should render to match snapshot 1`] = `
     className="zendesk-search-header"
   >
     Zendesk Search
+    <p>
+      Searchable fields
+    </p>
+    <p>
+      Organization table:
+    </p>
+    _id, 
+    url, 
+    external_id, 
+    name, 
+    domain_names, 
+    created_at, 
+    details, 
+    shared_tickets, 
+    tags, 
+    <p>
+      User table:
+    </p>
+    _id, 
+    url, 
+    external_id, 
+    name, 
+    alias, 
+    created_at, 
+    active, 
+    verified, 
+    shared, 
+    locale, 
+    timezone, 
+    last_login_at, 
+    email, 
+    phone, 
+    signature, 
+    organization_id, 
+    tags, 
+    suspended, 
+    role, 
+    <p>
+      Ticket table:
+    </p>
+    _id, 
+    url, 
+    external_id, 
+    created_at, 
+    type, 
+    subject, 
+    description, 
+    priority, 
+    status, 
+    submitter_id, 
+    assignee_id, 
+    organization_id, 
+    tags, 
+    has_incidents, 
+    due_at, 
+    via, 
+  </div>
+  <div>
+    <div
+      className="Dropdown-root"
+    >
+      <div
+        aria-haspopup="listbox"
+        className="Dropdown-control"
+        onMouseDown={[Function]}
+        onTouchEnd={[Function]}
+      >
+        <div
+          className="Dropdown-placeholder is-selected"
+        >
+          Organizations
+        </div>
+        <div
+          className="Dropdown-arrow-wrapper"
+        >
+          <span
+            className="Dropdown-arrow"
+          />
+        </div>
+      </div>
+    </div>
+    <div>
+      <label>
+        SearchableFields(e.g. name,tags): 
+      </label>
+      <input
+        onChange={[Function]}
+        type="text"
+      />
+    </div>
+    <div>
+      <label>
+        Search Value: 
+      </label>
+      <input
+        onChange={[Function]}
+        type="text"
+      />
+    </div>
   </div>
   <button
     className="search-button"

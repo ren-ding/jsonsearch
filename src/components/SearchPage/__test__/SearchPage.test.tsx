@@ -28,8 +28,8 @@ describe('SearchPage', () => {
         wrapper.setState({ 
           zendeskSearch: new ZendeskSearch(),
           searchResults:[],
-          searchTable: SearchTable.Organizations,
-          searchableFields: ["name"],
+          selectedSearchTable: SearchTable.Organizations,
+          searchableFields: "name",
           searchValue: "Enthaze"
         });
 
@@ -59,8 +59,8 @@ describe('SearchPage', () => {
         wrapper.setState({ 
           zendeskSearch: new ZendeskSearch(),
           searchResults:[],
-          searchTable: SearchTable.Users,
-          searchableFields: ["name"],
+          selectedSearchTable: SearchTable.Users,
+          searchableFields: "name",
           searchValue: "Francisca Rasmussen"
         });
 
@@ -89,8 +89,8 @@ describe('SearchPage', () => {
         wrapper.setState({ 
           zendeskSearch: new ZendeskSearch(),
           searchResults:[],
-          searchTable: SearchTable.Tickets,
-          searchableFields: ["tags"],
+          selectedSearchTable: SearchTable.Tickets,
+          searchableFields: "tags",
           searchValue: "Ohio"
         });
 

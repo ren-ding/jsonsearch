@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SearchFilter should render to match snapshot 1`] = `
+<div>
+  <div
+    className="Dropdown-root"
+  >
+    <div
+      aria-haspopup="listbox"
+      className="Dropdown-control"
+      onMouseDown={[Function]}
+      onTouchEnd={[Function]}
+    >
+      <div
+        className="Dropdown-placeholder is-selected"
+      >
+        0
+      </div>
+      <div
+        className="Dropdown-arrow-wrapper"
+      >
+        <span
+          className="Dropdown-arrow"
+        />
+      </div>
+    </div>
+  </div>
+  <div>
+    <label>
+      SearchableFields(e.g. name,tags): 
+    </label>
+    <input
+      onChange={[Function]}
+      type="text"
+    />
+  </div>
+  <div>
+    <label>
+      Search Value: 
+    </label>
+    <input
+      onChange={[Function]}
+      type="text"
+    />
+  </div>
+</div>
+`;

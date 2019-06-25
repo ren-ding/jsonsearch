@@ -3,15 +3,17 @@ import ZendeskSearch, {ZendeskSearchInterface} from '../../api/ZendeskSearch';
 import OrganizationContainer from '../../model/OrganizationContainer';
 import UserContainer from '../../model/UserContainer';
 import TicketContainer from '../../model/TicketContainer';
+import SearchFilter from '../SearchFilter';
+import {Option} from 'react-dropdown';
 
 interface SearchPagePropsInterface {
 }
 
-interface SearchPageStateInterface {
-    zendeskSearch: ZendeskSearch
-    searchResults: Array<OrganizationContainer|UserContainer|TicketContainer>
-    searchTable: SearchTable
-    searchableFields: Array<string>
+interface SearchPageStatesInterface {
+    zendeskSearch: ZendeskSearch,
+    searchResults: Array<OrganizationContainer|UserContainer|TicketContainer>,
+    selectedSearchTable: SearchTable,
+    searchableFields: string,
     searchValue: string
 }
 
@@ -22,28 +24,39 @@ export enum SearchTable {
 }
 
 /// <summary>
-/// This is a root component, also a container component using for searching data
-/// The component contains: a header component, a filter component, a result display component and a search button component
+/// SearchPage component is a container component using for searching data
+/// The component contains: a header component, a filter component, a result display component and a search button
 /// </summary>
-export default class SearchPage extends Component<SearchPagePropsInterface,SearchPageStateInterface>
+export default class SearchPage extends Component<SearchPagePropsInterface, SearchPageStatesInterface>
                                 implements ZendeskSearchInterface {
     constructor(props:SearchPagePropsInterface) {
         super(props);
         this.state = {
           zendeskSearch: new ZendeskSearch(),
           searchResults:[],
-          searchTable: SearchTable.Organizations,
-          searchableFields: [],
+          selectedSearchTable: SearchTable.Organizations,
+          searchableFields: "",
           searchValue: ""
         };
     }
 
     render() {
-        //TODO: add filter component and result display component
+        const ddlSearchTableOptions = [
+            {value: SearchTable.Organizations.toString(), label:'Organizations'},
+            {value: SearchTable.Users.toString(), label:'Users'},
+            {value: SearchTable.Tickets.toString(), label:'Tickets'}
+        ];
+
         return (
         <div>
             <ZendeskSearchHeader/>
-            
+            <SearchFilter
+             searchTableDropdownList = { ddlSearchTableOptions }
+             onChange = {this.onSearchTableDropdownListChange}
+             selectedSearchTable = {this.state.selectedSearchTable}
+             onSearchableFieldsChange = {this.onSearchableFieldsChange}
+             onSearchValueChange = {this.onSearchValueChange}
+            />
             <button type="button" className='search-button' onClick={this.onSearchButtonClick}>Search</button>
         </div>);
     }
@@ -61,29 +74,79 @@ export default class SearchPage extends Component<SearchPagePropsInterface,Searc
     }
 
     onSearchButtonClick = () => {
-        if(this.state.searchTable === null || this.state.searchableFields.length === 0) return;
-        switch(this.state.searchTable){
+        const searchableFieldsArray = this.state.searchableFields.split(',');
+
+        if(this.state.selectedSearchTable === null || searchableFieldsArray.length === 0) return;
+        switch(this.state.selectedSearchTable){
             case SearchTable.Organizations:
                 this.setState({
-                    searchResults: this.searchOrganizationWithRelatedInfo(this.state.searchableFields, this.state.searchValue)
+                    searchResults: this.searchOrganizationWithRelatedInfo(searchableFieldsArray, this.state.searchValue)
                 });
                 break;
             case SearchTable.Users:
                 this.setState({
-                    searchResults: this.searchUserWithRelatedInfo(this.state.searchableFields, this.state.searchValue)
+                    searchResults: this.searchUserWithRelatedInfo(searchableFieldsArray, this.state.searchValue)
                 });
                 break;
             case SearchTable.Tickets:
                 this.setState({
-                    searchResults: this.searchTicketWithRelatedInfo(this.state.searchableFields, this.state.searchValue)
+                    searchResults: this.searchTicketWithRelatedInfo(searchableFieldsArray, this.state.searchValue)
                 });
                 break;
             default:
                 return;
         }
     }
+
+    onSearchTableDropdownListChange = (option:Option) => {
+        this.setState({
+            selectedSearchTable: parseInt(option.value)
+        })
+    }
+
+    onSearchableFieldsChange = (event: {target: { value: string }}) => {
+        this.setState({
+            searchableFields:event.target.value
+        });
+    }
+
+    onSearchValueChange = (event: {target: { value: string }}) => {
+        this.setState({
+            searchValue:event.target.value
+        });
+    }
+
 }
 
-const ZendeskSearchHeader = () => (
-    <div className='zendesk-search-header'>Zendesk Search</div>
-);
+const ZendeskSearchHeader = () => {
+    //unfortunitely, keys of interface in typescript still not supported
+    //https://github.com/Microsoft/TypeScript/issues/13267
+    const keysOfOrganization = [
+        '_id','url','external_id','name','domain_names',
+        'created_at','details','shared_tickets','tags'
+    ];
+
+    const keysOfUser = [
+        '_id','url','external_id','name','alias','created_at','active','verified',
+        'shared','locale','timezone','last_login_at','email','phone','signature',
+        'organization_id','tags','suspended','role'
+    ];
+    
+    const keysOfTicket = [
+            '_id','url','external_id','created_at','type','subject','description',
+            'priority','status','submitter_id','assignee_id','organization_id',
+            'tags','has_incidents','due_at','via'
+    ];
+    
+    return (
+    <div className='zendesk-search-header'>
+        Zendesk Search
+        <p>Searchable fields</p>
+        <p>Organization table:</p>
+        {keysOfOrganization.map(o=> (o + ', '))}
+        <p>User table:</p>
+        {keysOfUser.map(u=> (u + ', '))}
+        <p>Ticket table:</p>
+        {keysOfTicket.map(t=> (t + ', '))}
+    </div>);
+};
