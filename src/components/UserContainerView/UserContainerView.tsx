@@ -3,41 +3,38 @@ import UserContainer from '../../model/UserContainer';
 import ItemView from '../ItemView';
 
 export interface UserContainerViewProps {
-    userContainer: UserContainer
+    userContainerList: Array<UserContainer>
 }
 
 export default class UserContainerView extends Component<UserContainerViewProps> {
-    constructor(props:UserContainerViewProps) {
-      super(props);
-    }
-  
-    render() {
-      const displayOrganization = (this.props.userContainer.organization != null);
-
-      return (
-        <div>
+    renderList = () => this.props.userContainerList.map((userContainer: UserContainer, index:number) =>
+      (
+        <div key={index}>
           <h2>User:</h2>
             <ItemView
-              itemObject ={this.props.userContainer.user}
+              itemObject ={userContainer.user}
             />
           <h2>Organization:</h2>
             <ItemView
-              itemObject ={this.props.userContainer.organization || {}}
+              itemObject ={userContainer.organization || {}}
             />
           <h2>SubmitTickets:</h2>
-            {this.props.userContainer.submitTickets.map(ticket => (
+            {userContainer.submitTickets.map(ticket => (
               <ItemView
                 itemObject ={ticket}
               />
             ))}
           <h2>AssignedTickets:</h2>
-            {this.props.userContainer.assignedTickets.map(ticket => (
+            {userContainer.assignedTickets.map(ticket => (
               <ItemView
                 itemObject ={ticket}
               />
             ))}
         </div>
-      );
-      
+      )
+    );
+  
+    render() {
+      return <div>{this.renderList()}</div>;
     }
 }

@@ -6,7 +6,7 @@ describe('TicketContainerView', () => {
     let props:TicketContainerViewProps;
     beforeEach(()=> {
         props = {
-            ticketContainer: {
+            ticketContainerList: [{
                 ticket: {
                     "_id": "436bf9b0-1147-4c0a-8439-6f79833bff5b",
                     "url": "http://initech.zendesk.com/api/v2/tickets/436bf9b0-1147-4c0a-8439-6f79833bff5b.json",
@@ -56,7 +56,7 @@ describe('TicketContainerView', () => {
                 },
                 assignee: undefined,
                 organization: undefined,
-            }
+            }]
         }
     });
 

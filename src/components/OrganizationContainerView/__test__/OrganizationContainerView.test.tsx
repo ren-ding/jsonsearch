@@ -6,7 +6,7 @@ describe('OrganizationContainerView', () => {
     let props:OrganizationContainerViewProps;
     beforeEach(()=> {
         props = { 
-            organizationContainer: {
+            organizationContainerList: [{
                 organization: {
                     "_id": 101,
                     "url": "http://initech.zendesk.com/api/v2/organizations/101.json",
@@ -30,7 +30,7 @@ describe('OrganizationContainerView', () => {
                 },
                 users: [],
                 tickets: []
-            }
+            }]
           }
     });
 

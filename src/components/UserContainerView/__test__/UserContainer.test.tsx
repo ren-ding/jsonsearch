@@ -6,7 +6,7 @@ describe('UserContainerView', () => {
     let props:UserContainerViewProps;
     beforeEach(()=> {
         props = {
-            userContainer: {
+            userContainerList: [{
                 user: {
                     "_id": 1,
                     "url": "http://initech.zendesk.com/api/v2/users/1.json",
@@ -56,7 +56,7 @@ describe('UserContainerView', () => {
                   },
                 submitTickets: [],
                 assignedTickets: []
-            }
+            }]
         }
     });
 

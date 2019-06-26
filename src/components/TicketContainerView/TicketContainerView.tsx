@@ -3,37 +3,34 @@ import TicketContainer from '../../model/TicketContainer';
 import ItemView from '../ItemView';
 
 export interface TicketContainerViewProps {
-    ticketContainer: TicketContainer
+    ticketContainerList: Array<TicketContainer>
 }
 
 export default class TicketContainerView extends Component<TicketContainerViewProps> {
-    constructor(props:TicketContainerViewProps) {
-      super(props);
-    }
-  
-    render() {
-      const displayAssignee = (this.props.ticketContainer.assignee != null);
-      const displayOrganization = (this.props.ticketContainer.organization != null);
-      
-      return (
-        <div>
+    renderList = () => this.props.ticketContainerList.map((ticketContainer: TicketContainer, index:number) => 
+      (
+        <div key={index}>
           <h2>Ticket:</h2>
             <ItemView
-              itemObject = {this.props.ticketContainer.ticket}
+              itemObject = {ticketContainer.ticket}
             />
           <h2>Submitter:</h2>
             <ItemView
-              itemObject = {this.props.ticketContainer.submitter}
+              itemObject = {ticketContainer.submitter}
             />
           <h2>Assignee:</h2>
             <ItemView
-              itemObject = {this.props.ticketContainer.assignee || {}}
+              itemObject = {ticketContainer.assignee || {}}
             />
           <h2>Organization:</h2>
             <ItemView
-              itemObject = {this.props.ticketContainer.organization || {}}
+              itemObject = {ticketContainer.organization || {}}
             />
         </div>
-      );
+      )
+    );
+
+    render() {
+      return <div>{this.renderList()}</div>;
     }
 }

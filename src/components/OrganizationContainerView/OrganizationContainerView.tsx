@@ -3,34 +3,34 @@ import OrganizationContainer from '../../model/OrganizationContainer';
 import ItemView from '../ItemView';
 
 export interface OrganizationContainerViewProps {
-    organizationContainer: OrganizationContainer
+    organizationContainerList: Array<OrganizationContainer>
 }
 
 export default class OrganizationContainerView extends Component<OrganizationContainerViewProps> {
-    constructor(props:OrganizationContainerViewProps) {
-      super(props);
-    }
-  
-    render() {
-      return (
-        <div>
+    renderList = () => this.props.organizationContainerList.map((organizationContainer:OrganizationContainer, index:number) => 
+      (
+        <div key={index}>
           <h2>Organization:</h2>
             <ItemView
-              itemObject = {this.props.organizationContainer.organization}
+              itemObject = {organizationContainer.organization}
             />
           <h2>Users:</h2>
-            {this.props.organizationContainer.users.map(user => (
+            {organizationContainer.users.map(user => (
               <ItemView
                 itemObject = {user}
               />
             ))}
           <h2>Tickets:</h2>
-            {this.props.organizationContainer.tickets.map(ticket => (
+            {organizationContainer.tickets.map(ticket => (
               <ItemView
                 itemObject = {ticket}
               />
             ))}
         </div>
-      );
+      )
+    );
+
+    render() {
+      return <div>{this.renderList()}</div>;
     }
 }

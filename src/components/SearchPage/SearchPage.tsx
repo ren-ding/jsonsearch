@@ -6,6 +6,9 @@ import TicketContainer from '../../model/TicketContainer';
 import SearchFilter from '../SearchFilter';
 import {Option} from 'react-dropdown';
 import './style/search-page.css';
+import OrganizationContainerView from '../OrganizationContainerView';
+import UserContainerView from '../UserContainerView';
+import TicketContainerView from '../TicketContainerView';
 
 interface SearchPagePropsInterface {
 }
@@ -59,6 +62,10 @@ export default class SearchPage extends Component<SearchPagePropsInterface, Sear
              onSearchValueChange = {this.onSearchValueChange}
             />
             <button type="button" className='ui blue button search-button' onClick={this.onSearchButtonClick}>Search</button>
+            <ZendeskSearchResults
+                selectedSearchTable = {this.state.selectedSearchTable}
+                searchResults = {this.state.searchResults}
+            />
         </div>);
     }
 
@@ -171,3 +178,27 @@ const ZendeskSearchHeader = () => {
         </table>
     </div>);
 };
+
+interface ZendeskSearchResultInterface {
+    selectedSearchTable : SearchTable
+    searchResults : Array<OrganizationContainer|UserContainer|TicketContainer>
+}
+
+const ZendeskSearchResults = ({
+    selectedSearchTable,
+    searchResults
+}:ZendeskSearchResultInterface) => {
+    switch(selectedSearchTable){
+        case SearchTable.Organizations:
+            const organizationResults = searchResults as Array<OrganizationContainer>;
+            return <OrganizationContainerView organizationContainerList = {organizationResults} />
+        case SearchTable.Users:
+            const userResults = searchResults as Array<UserContainer>;
+            return <UserContainerView userContainerList = {userResults} />
+        case SearchTable.Tickets:
+            const ticketResults = searchResults as Array<TicketContainer>;
+            return <TicketContainerView ticketContainerList = {ticketResults} />
+        default:
+            return (<div>Something wrong with choosing search table!</div>);
+    }
+}

@@ -113,7 +113,7 @@ export default class ZendeskSearch implements ZendeskSearchInterface {
 
     private stringArraysEqual(a1: Array<string>,a2:Array<string>) {
         /* WARNING: arrays must not contain {objects} or behavior may be undefined */
-        return JSON.stringify(a1)==JSON.stringify(a2);
+        return JSON.stringify(a1)===JSON.stringify(a2);
     }
 
     private indexedOrganizationsById() {

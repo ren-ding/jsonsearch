@@ -31,10 +31,6 @@ const InputBox = ({
 );
 
 export default class SearchFilter extends Component<SearchFilterPropsInterface, SearchFilterStatesInterface> {
-    constructor(props:SearchFilterPropsInterface) {
-        super(props);
-    }
-
     render() {
         return (
         <div className='search-filter-wrapper'>
