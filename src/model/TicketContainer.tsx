@@ -4,7 +4,7 @@ import Organization from './Organization';
 
 export default interface TicketContainer {
     ticket: Ticket;
-    submitter: User;
+    submitter?: User;
     assignee?: User;
     organization?: Organization;
 }

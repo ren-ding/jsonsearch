@@ -16,7 +16,7 @@ export default class TicketContainerView extends Component<TicketContainerViewPr
             />
           <h2>Submitter:</h2>
             <ItemView
-              itemObject = {ticketContainer.submitter}
+              itemObject = {ticketContainer.submitter || {}}
             />
           <h2>Assignee:</h2>
             <ItemView

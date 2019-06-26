@@ -69,15 +69,15 @@ export default class SearchPage extends Component<SearchPagePropsInterface, Sear
         </div>);
     }
 
-    searchOrganizationWithRelatedInfo(searchableFields:Array<string>, searchValue: string) {
+    searchOrganizationWithRelatedInfo(searchableFields:Array<string>, searchValue: string) : Array<OrganizationContainer> {
         return this.state.zendeskSearch.searchOrganizationWithRelatedInfo(searchableFields, searchValue);
     } 
 
-    searchUserWithRelatedInfo(searchableFields:Array<string>, searchValue: string) {
+    searchUserWithRelatedInfo(searchableFields:Array<string>, searchValue: string) : Array<UserContainer> {
         return this.state.zendeskSearch.searchUserWithRelatedInfo(searchableFields, searchValue);;
     }
 
-    searchTicketWithRelatedInfo(searchableFields:Array<string>, searchValue: string) {
+    searchTicketWithRelatedInfo(searchableFields:Array<string>, searchValue: string) : Array<TicketContainer> {
         return this.state.zendeskSearch.searchTicketWithRelatedInfo(searchableFields, searchValue);;
     }
 
@@ -108,7 +108,8 @@ export default class SearchPage extends Component<SearchPagePropsInterface, Sear
 
     onSearchTableDropdownListChange = (option:Option) => {
         this.setState({
-            selectedSearchTable: parseInt(option.value)
+            selectedSearchTable: parseInt(option.value),
+            searchResults: []
         })
     }
 

@@ -165,7 +165,9 @@ describe('ZendeskSearch', () => {
             expect(result.length).toBe(1);
             expect(result[0].user).toEqual(fakeDatabase.users[0]);
             expect(result[0].organization).not.toBe(null);
-            expect(result[0].organization._id).toEqual(119);
+            if(result[0].organization != null) {
+                expect(result[0].organization._id).toEqual(119);
+            }
             expect(result[0].submitTickets.length).toEqual(2);
             const submitTicketsId = [
                 'fc5a8a70-3814-4b17-a6e9-583936fca909',
@@ -184,9 +186,12 @@ describe('ZendeskSearch', () => {
         it('should return matched tickets and related organization and users', () => {
             const result = zendeskSearch.searchTicketWithRelatedInfo(["tags"], "Ohio");
             expect(result.length).toEqual(ohioTicketsId.length);
-            expect(result[0].submitter._id).toEqual(fakeDatabase.users[37]._id);
-            expect(result[0].assignee._id).toEqual(fakeDatabase.users[23]._id);
-            expect(result[0].organization._id).toEqual(fakeDatabase.organizations[15]._id);
+            expect(result[0].submitter).not.toBe(null);
+            if(result[0].submitter != null) expect(result[0].submitter._id).toEqual(fakeDatabase.users[37]._id);
+            expect(result[0].assignee).not.toBe(null);
+            if(result[0].assignee != null) expect(result[0].assignee._id).toEqual(fakeDatabase.users[23]._id);
+            expect(result[0].organization).not.toBe(null);
+            if(result[0].organization != null) expect(result[0].organization._id).toEqual(fakeDatabase.organizations[15]._id);
         });
     });
 

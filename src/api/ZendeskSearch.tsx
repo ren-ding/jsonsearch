@@ -57,8 +57,8 @@ export default class ZendeskSearch implements ZendeskSearchInterface {
         const organizations = this.searchFromOrganizations(searchableFields, searchValue);
         return organizations.map((organization: Organization) => ({
             'organization': organization,
-            'users':this._db.indexedUsersByOrganizationId[organization._id],
-            'tickets': this._db.indexedTicketsByOrganizationId[organization._id]
+            'users':this._db.indexedUsersByOrganizationId[organization._id] || [],
+            'tickets': this._db.indexedTicketsByOrganizationId[organization._id] || []
         }));
     }
 
@@ -66,11 +66,11 @@ export default class ZendeskSearch implements ZendeskSearchInterface {
         const users = this.searchFromUsers(searchableFields, searchValue);
         return users.map((user: User) => ({
             'user': user,
-            'organization': (user.organization_id == null) 
+            'organization': (user.organization_id == null || this._db.indexedOrganizationsById[user.organization_id] == null) 
                             ? null 
                             : this._db.indexedOrganizationsById[user.organization_id][0],
-            'submitTickets':this._db.indexedTicketsBySubmitterId[user._id],
-            'assignedTickets': this._db.indexedTicketsByAssigneeId[user._id]
+            'submitTickets': this._db.indexedTicketsBySubmitterId[user._id] || [],
+            'assignedTickets': this._db.indexedTicketsByAssigneeId[user._id] || []
         }));
     }
 
@@ -78,16 +78,17 @@ export default class ZendeskSearch implements ZendeskSearchInterface {
         const tickets = this.searchFromTickets(searchableFields, searchValue);
         return tickets.map((ticket: Ticket) => ({
             'ticket': ticket,
-            'submitter': this._db.indexedUsersById[ticket.submitter_id][0],
-            'assignee': (ticket.assignee_id == null) 
+            'submitter': (ticket.submitter_id == null || this._db.indexedUsersById[ticket.submitter_id] == null)
+                            ? null
+                            : this._db.indexedUsersById[ticket.submitter_id][0],
+            'assignee': (ticket.assignee_id == null || this._db.indexedUsersById[ticket.assignee_id] == null) 
                             ? null 
                             : this._db.indexedUsersById[ticket.assignee_id][0],
-            'organization': (ticket.organization_id == null) 
+            'organization': (ticket.organization_id == null || this._db.indexedOrganizationsById[ticket.organization_id] == null) 
                             ? null 
                             : this._db.indexedOrganizationsById[ticket.organization_id][0]
         }));
     }
-    
 
     searchFromOrganizations(searchableFields:Array<string>, searchValue: string) : Array<Organization> {
         return this.search(this._organizationsSearch, searchableFields, searchValue);
