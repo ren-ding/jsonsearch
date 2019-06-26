@@ -86,6 +86,7 @@ Organization, User and Ticket have primary key, and foreign keys<br>
 - Ticket: primary key is _id, foreign keys are submitter_id, assignee_id and organization_id
 
 Based on given json files, these model specified some nullable fields<br>
+
 e.g. a Ticket must have submitter_id (submitted by some user), but could have no assignee_id (not assigned yet) <br>
 The search can handle these nullable fields<br>
 
@@ -99,17 +100,25 @@ The search can handle these nullable fields<br>
 ### search explaination
 Search index is using lodash groupby, which can group by one layer field (string, number, boolean) <br>
 I implemented the two layers field indexing by adding temporary fields and removing them<br>
+
 e.g. User has a tags property which is an array. If there are two users:<br>
 - {_id:1, tags: ['programmer','qa']}
 - {_id:2, tags: ['qa']}
+
 It first added fields<br>
+
 - {_id:1, tags: ['programmer','qa'], __tmpFieldfor__tags: 'programmer'}
 - {_id:1, tags: ['programmer','qa'], __tmpFieldfor__tags: 'qa'}
 - {_id:2, tags: ['qa'], __tmpFieldfor__tags: 'qa'}
+
 Then group by __tmpFieldfor__tags<br>
+
 - {'programmer', [{_id:1, tags: ['programmer','qa'], __tmpFieldfor__tags: 'programmer'}] }
 - {'qa', [{_id:1, tags: ['programmer','qa'], __tmpFieldfor__tags: 'qa'}, {_id:2, tags: ['qa'], __tmpFieldfor__tags: 'qa'}] }
+
 Then remove __tmpFieldfor__tags<br>
+
 - {'programmer', [{_id:1, tags: ['programmer','qa']}] }
 - {'qa', [{_id:1, tags: ['programmer','qa']}, {_id:2, tags: ['qa']] }
+
 When the user search 'qa', it will get [{_id:1, tags: ['programmer','qa']}, {_id:2, tags: ['qa']] in O(1) <br>
