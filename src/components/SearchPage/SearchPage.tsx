@@ -82,7 +82,9 @@ export default class SearchPage extends Component<SearchPagePropsInterface, Sear
     }
 
     onSearchButtonClick = () => {
-        const searchableFieldsArray = this.state.searchableFields.split(',');
+        let searchableFieldsArray = this.state.searchableFields.split(',');
+        //trim user accidentally input space between each field
+        searchableFieldsArray = searchableFieldsArray.map(field => field.replace(/\s+/g, ''));
 
         if(this.state.selectedSearchTable === null || searchableFieldsArray.length === 0) return;
         switch(this.state.selectedSearchTable){
