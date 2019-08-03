@@ -1,11 +1,11 @@
-Zendesk Search
+Json Search
 ===================
 
 Description
 -----------
 - This is a React single page application created by create-react-app --typescript
 
-- The application is using for searching given organizations, users and tickets
+- The application is using for searching given organizations, users and tickets json data
 
 ## Installation Instruction
 
